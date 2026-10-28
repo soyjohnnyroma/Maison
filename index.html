@@ -1,125 +1,375 @@
-El proyecto ya tiene: nada (inicio del proyecto desde cero). Ahora implemente: Setup inicial, design system temático con paleta de alta gama de Muebles Maison (Negro Azabache Mate, Carbón Elevado, Dorado Champagne, Blanco Marfil y Verde WhatsApp), tipografía, tokens semánticos, componentes UI primitivos reutilizables, layout maestro responsivo (AppLayout) y estructura de navegación con rutas base y estados vacíos iniciales.
+<!DOCTYPE html>
+<html lang="es" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Maison - Exclusive Designs</title>
+  
+  <!-- Google Fonts: Cinzel & Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
 
----
+  <!-- Tailwind Config Customizado con Identidad Maison -->
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            onyx: {
+              950: '#0A0B0D',
+              900: '#0E0F12',
+              800: '#181A20',
+              700: '#232630',
+              600: '#2D313E',
+            },
+            gold: {
+              500: '#E5C158',
+              400: '#D4AF37',
+              300: '#C8A86B',
+              200: 'rgba(212, 175, 55, 0.25)',
+              100: 'rgba(212, 175, 55, 0.10)',
+            },
+            whatsapp: {
+              500: '#25D366',
+              600: '#128C7E',
+              50: '#0D2B1D',
+            },
+            ivory: {
+              50: '#F8F5EE',
+              100: '#E8E3D8',
+              200: '#8E93A0',
+            },
+            status: {
+              success: '#236B43',
+              warning: '#C48B22',
+              critical: '#A32A2A',
+              info: '#1E518A',
+            }
+          },
+          fontFamily: {
+            serif: ['Cinzel', 'Georgia', 'serif'],
+            sans: ['Plus Jakarta Sans', 'sans-serif'],
+          },
+          boxShadow: {
+            'gold-glow': '0 4px 20px rgba(212, 175, 55, 0.12)',
+            'onyx-card': '0 8px 30px rgba(0, 0, 0, 0.6)',
+          }
+        }
+      }
+    }
+  </script>
 
-### 1. OBJETIVO Y ALCANCE DE ESTA ETAPA
-Establecer los cimientos visuales y estructurales de **Muebles Maison**, micro-SaaS de control de inventario inteligente y cotizaciones para tiendas minoristas, talleres de carpintería y fábricas de muebles para el hogar (tocadores, baños, cocinas y decoración).
+  <style>
+    body {
+      background-color: #0E0F12;
+      color: #F8F5EE;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    .font-brand {
+      font-family: 'Cinzel', serif;
+    }
+  </style>
+</head>
+<body class="bg-onyx-900 text-ivory-50 min-h-screen flex flex-col md:flex-row antialiased selection:bg-gold-400 selection:text-onyx-950">
 
-IMPORTANTE: No implementes todavía la autenticación, base de datos ni lógica de negocio de etapas posteriores. Esta etapa se limita al setup de estilos, componentes UI primitivos, layout maestro y rutas con estados vacíos iniciales.
+  <!-- SIDEBAR DESKTOP -->
+  <aside class="hidden md:flex flex-col w-64 bg-onyx-950 border-r border-gold-200 fixed h-full z-30">
+    <div class="p-6 border-b border-onyx-800">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-onyx-800 border border-gold-400 flex items-center justify-center text-gold-400 font-brand text-xl font-bold shadow-gold-glow">
+          M
+        </div>
+        <div>
+          <h2 class="font-brand font-bold text-lg text-gold-400 tracking-wider leading-none">MAISON</h2>
+          <span class="text-[10px] text-ivory-200 tracking-widest uppercase font-medium">Exclusive Designs</span>
+        </div>
+      </div>
+      
+      <div class="mt-4 flex items-center justify-between bg-onyx-800 p-2.5 rounded-lg border border-onyx-700">
+        <div class="flex items-center gap-2">
+          <i data-lucide="store" class="w-4 h-4 text-gold-400"></i>
+          <span class="text-xs font-medium text-ivory-100">Taller Principal</span>
+        </div>
+        <span class="bg-whatsapp-50 text-whatsapp-500 text-[10px] px-2 py-0.5 rounded-full font-bold border border-whatsapp-500/30">WA On</span>
+      </div>
+    </div>
 
----
+    <nav class="flex-1 px-4 py-6 space-y-1.5 overflow-y-auto">
+      <button onclick="switchTab('dashboard')" id="nav-dashboard" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm font-medium transition-all bg-gold-400 text-onyx-950 font-semibold shadow-gold-glow">
+        <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
+        <span>Dashboard</span>
+      </button>
 
-### 2. CONFIGURACIÓN DE TOKENS VISUALES & TAILWIND CSS
+      <button onclick="switchTab('inventario')" id="nav-inventario" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm font-medium transition-all text-ivory-100 hover:bg-onyx-800 hover:text-gold-400">
+        <i data-lucide="package" class="w-5 h-5"></i>
+        <span>Inventario & Stock</span>
+      </button>
 
-Configura `tailwind.config.js` y `src/styles/globals.css` con los tokens semánticos exactos:
+      <button onclick="switchTab('whatsapp')" id="nav-whatsapp" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm font-medium transition-all text-ivory-100 hover:bg-onyx-800 hover:text-gold-400">
+        <i data-lucide="message-square" class="w-5 h-5"></i>
+        <span>WhatsApp Sales</span>
+      </button>
 
-#### Paleta y Tokens de Color
-- **Fondo Base (Negro Azabache Mate)**: `bg-background` -> `#0E0F12`
-- **Superficie / Tarjetas (Carbón Elevado)**: `bg-card` / `bg-surface` -> `#181A20`
-- **Superficies Secundarias / Hover**: `bg-surface-hover` -> `#232630`
-- **Bordes y Delimitadores**: `border-border` -> `#2D313E`
-- **Acento Principal / Marca (Dorado Champagne)**: `text-brand-gold` / `bg-brand-gold` -> `#D4AF37` (con variantes `#C29F2F` y `#F3D068` para estados activos/hover)
-- **Texto Primario (Blanco Marfil)**: `text-ivory-primary` -> `#F8F5EE`
-- **Texto Secundario / Muted**: `text-ivory-muted` -> `#A6A9B6`
-- **Acento de Canal / WhatsApp**: `text-whatsapp` / `bg-whatsapp` -> `#25D366` (con variante fondo oscuro `#0E291C` y borde `#175C3B`)
-- **Estados Semánticos**:
-  - Peligro / Stock Crítico: `#EF4444` (fondo `#2A1215`, borde `#5C1D24`)
-  - Advertencia / Stock Bajo: `#F59E0B` (fondo `#2B1D0E`, borde `#633E12`)
-  - Éxito / Confirmado: `#10B981` (fondo `#0F291E`, borde `#18583D`)
-  - Info / En Proceso: `#3B82F6` (fondo `#0E1E38`, borde `#1D3D6E`)
+      <button onclick="switchTab('remisiones')" id="nav-remisiones" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm font-medium transition-all text-ivory-100 hover:bg-onyx-800 hover:text-gold-400">
+        <i data-lucide="file-text" class="w-5 h-5"></i>
+        <span>Remisiones</span>
+      </button>
 
-#### Tipografía y Bordes
-- **Fuentes**: Inter / Sans-serif moderno para interfaz técnica y números legibles; soporte para fuentes elegantes con estilo serif/display para el isotipo y encabezados selectos de Muebles Maison.
-- **Bordes**: Radios redondeados sutiles (`rounded-lg` de 8px a 12px) y bordes finos de 1px con `#2D313E` para mantener estética limpia y profesional de taller/fábrica.
+      <button onclick="switchTab('cotizador')" id="nav-cotizador" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm font-medium transition-all text-ivory-100 hover:bg-onyx-800 hover:text-gold-400">
+        <i data-lucide="calculator" class="w-5 h-5"></i>
+        <span>Cotizador</span>
+      </button>
 
----
+      <button onclick="switchTab('reportes')" id="nav-reportes" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm font-medium transition-all text-ivory-100 hover:bg-onyx-800 hover:text-gold-400">
+        <i data-lucide="bar-chart-3" class="w-5 h-5"></i>
+        <span>Reportes</span>
+      </button>
 
-### 3. COMPONENTES UI PRIMITIVOS REUTILIZABLES (`src/components/ui/`)
+      <button onclick="switchTab('configuracion')" id="nav-configuracion" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm font-medium transition-all text-ivory-100 hover:bg-onyx-800 hover:text-gold-400">
+        <i data-lucide="settings" class="w-5 h-5"></i>
+        <span>Configuración</span>
+      </button>
+    </nav>
 
-Crea los componentes primitivos accesibles y estilizados con Tailwind:
+    <div class="p-4 border-t border-onyx-800 bg-onyx-900/50">
+      <div class="flex items-center gap-3">
+        <div class="w-8 h-8 rounded-full bg-gold-400/20 border border-gold-400 text-gold-400 flex items-center justify-center font-bold text-xs">
+          MC
+        </div>
+        <div class="flex-1 min-w-0">
+          <p class="text-xs font-semibold text-ivory-50 truncate">Maison Cali</p>
+          <p class="text-[10px] text-ivory-200 truncate">admin@maison.co</p>
+        </div>
+      </div>
+    </div>
+  </aside>
 
-1. **Button (`Button.tsx`)**:
-   - Variantes:
-     - `primary`: Fondo dorado champagne (`#D4AF37`), texto oscuro (`#0E0F12`), hover brillante y foco accesible.
-     - `secondary`: Fondo carbón (`#181A20`), borde `#2D313E`, texto blanco marfil (`#F8F5EE`), hover `#232630`.
-     - `whatsapp`: Fondo verde `#25D366`, texto negro o blanco, hover `#20BA5A` para acciones vinculadas a mensajes.
-     - `ghost`: Sin fondo, texto `#F8F5EE`, hover `#232630`.
-     - `danger`: Fondo `#EF4444` o contorno con texto rojo de alerta.
-   - Tamaños: `sm`, `md`, `lg`. Soporte para `loading` (spinner) y ranura para íconos izquierdo/derecho (Lucide Icons).
+  <!-- CONTENEDOR PRINCIPAL -->
+  <div class="flex-1 flex flex-col md:pl-64 min-h-screen">
+    
+    <header class="h-16 bg-onyx-950/80 backdrop-blur border-b border-gold-200 sticky top-0 z-20 px-4 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <button onclick="toggleMobileMenu()" class="md:hidden text-gold-400 p-1.5 rounded-lg hover:bg-onyx-800">
+          <i data-lucide="menu" class="w-6 h-6"></i>
+        </button>
+        
+        <div class="text-xs text-ivory-200 flex items-center gap-2">
+          <span>Maison</span>
+          <span>/</span>
+          <span id="breadcrumb-title" class="text-gold-400 font-semibold">Dashboard</span>
+        </div>
+      </div>
 
-2. **Card / Surface (`Card.tsx`)**:
-   - Tarjeta base con fondo carbón elevado (`#181A20`), borde `#2D313E`, padding configurable y soporte para `CardHeader`, `CardTitle`, `CardDescription`, `CardContent` y `CardFooter`.
+      <div class="flex items-center gap-3">
+        <button class="bg-gold-400 text-onyx-950 hover:bg-gold-500 px-3.5 py-1.5 rounded-lg text-xs font-semibold shadow-gold-glow hidden sm:flex items-center gap-1.5 transition-all">
+          <i data-lucide="plus" class="w-4 h-4"></i>
+          <span>Registrar Movimiento</span>
+        </button>
+        <button class="p-2 text-ivory-200 hover:text-gold-400 rounded-lg hover:bg-onyx-800 relative">
+          <i data-lucide="bell" class="w-5 h-5"></i>
+          <span class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-gold-400"></span>
+        </button>
+      </div>
+    </header>
 
-3. **Badge / Status Tag (`Badge.tsx`)**:
-   - Variantes temáticas:
-     - `stock-ok` (Verde esmeralda / Marfil)
-     - `stock-low` (Ámbar suave)
-     - `stock-empty` (Rojo carmesí para modelos agotados)
-     - `whatsapp-active` (Verde WhatsApp con pulso sutil)
-     - `gold-vip` (Dorado Champagne)
+    <div id="mobile-overlay" class="fixed inset-0 bg-black/80 z-40 hidden md:hidden" onclick="toggleMobileMenu()"></div>
+    <div id="mobile-sidebar" class="fixed top-0 left-0 bottom-0 w-64 bg-onyx-950 border-r border-gold-200 z-50 transform -translate-x-full transition-transform duration-300 md:hidden flex flex-col">
+      <div class="p-6 border-b border-onyx-800 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-xl bg-onyx-800 border border-gold-400 flex items-center justify-center text-gold-400 font-brand text-lg font-bold">
+            M
+          </div>
+          <div>
+            <h2 class="font-brand font-bold text-base text-gold-400">MAISON</h2>
+            <span class="text-[9px] text-ivory-200 uppercase">Exclusive Designs</span>
+          </div>
+        </div>
+        <button onclick="toggleMobileMenu()" class="text-ivory-200 hover:text-gold-400">
+          <i data-lucide="x" class="w-6 h-6"></i>
+        </button>
+      </div>
+      
+      <nav class="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
+        <button onclick="switchTab('dashboard'); toggleMobileMenu();" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm font-medium text-ivory-100 hover:bg-onyx-800 hover:text-gold-400">
+          <i data-lucide="layout-dashboard" class="w-5 h-5"></i> Dashboard
+        </button>
+        <button onclick="switchTab('inventario'); toggleMobileMenu();" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm font-medium text-ivory-100 hover:bg-onyx-800 hover:text-gold-400">
+          <i data-lucide="package" class="w-5 h-5"></i> Inventario & Stock
+        </button>
+        <button onclick="switchTab('whatsapp'); toggleMobileMenu();" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm font-medium text-ivory-100 hover:bg-onyx-800 hover:text-gold-400">
+          <i data-lucide="message-square" class="w-5 h-5"></i> WhatsApp Sales
+        </button>
+        <button onclick="switchTab('remisiones'); toggleMobileMenu();" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm font-medium text-ivory-100 hover:bg-onyx-800 hover:text-gold-400">
+          <i data-lucide="file-text" class="w-5 h-5"></i> Remisiones
+        </button>
+        <button onclick="switchTab('cotizador'); toggleMobileMenu();" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm font-medium text-ivory-100 hover:bg-onyx-800 hover:text-gold-400">
+          <i data-lucide="calculator" class="w-5 h-5"></i> Cotizador
+        </button>
+        <button onclick="switchTab('reportes'); toggleMobileMenu();" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm font-medium text-ivory-100 hover:bg-onyx-800 hover:text-gold-400">
+          <i data-lucide="bar-chart-3" class="w-5 h-5"></i> Reportes
+        </button>
+        <button onclick="switchTab('configuracion'); toggleMobileMenu();" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm font-medium text-ivory-100 hover:bg-onyx-800 hover:text-gold-400">
+          <i data-lucide="settings" class="w-5 h-5"></i> Configuración
+        </button>
+      </nav>
+    </div>
 
-4. **Input & Select (`Input.tsx`, `Select.tsx`, `Textarea.tsx`)**:
-   - Fondo `#121318`, borde `#2D313E`, texto `#F8F5EE`, placeholder `#A6A9B6`.
-   - Efecto focus-visible en borde dorado (`#D4AF37`) sin anillos azules genéricos.
-   - Soporte para etiquetas (`label`), texto de ayuda (`helperText`) y mensajes de error (`error`).
+    <!-- CONTENIDO DINÁMICO -->
+    <main class="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto pb-24 md:pb-8">
+      
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between pb-6 mb-6 border-b border-gold-200 gap-4">
+        <div>
+          <h1 id="page-title" class="text-2xl sm:text-3xl font-brand font-bold text-gold-400 tracking-wide">Dashboard General</h1>
+          <p id="page-desc" class="text-xs sm:text-sm text-ivory-200 mt-1">Métricas clave, ventas de tocadores y estado del inventario.</p>
+        </div>
+        <div>
+          <button class="bg-gold-400 text-onyx-950 hover:bg-gold-500 px-4 py-2 rounded-lg text-xs font-bold shadow-gold-glow flex items-center gap-1.5 transition-all">
+            <i data-lucide="plus" class="w-4 h-4"></i>
+            <span>Nueva Acción</span>
+          </button>
+        </div>
+      </div>
 
-5. **MetricCard (`MetricCard.tsx`)**:
-   - Tarjeta especializada para mostrar métricas clave de muebles (unidades en stock, modelos críticos, facturación estimada, mensajes procesados) con título, valor numérico en blanco marfil, indicador de variación y espacio para ícono de acento.
+      <div class="bg-onyx-800 border border-gold-200 rounded-2xl shadow-onyx-card overflow-hidden mt-6">
+        <div class="p-8 sm:p-12 flex flex-col items-center justify-center text-center">
+          <div class="w-16 h-16 rounded-2xl bg-gold-100 border border-gold-200 flex items-center justify-center text-gold-400 mb-5 shadow-gold-glow">
+            <i id="placeholder-icon" data-lucide="layout-dashboard" class="w-8 h-8"></i>
+          </div>
+          <h3 id="placeholder-title" class="text-xl font-brand font-semibold text-gold-400">Dashboard General</h3>
+          <p class="text-xs sm:text-sm text-ivory-200 max-w-md mt-2 leading-relaxed">
+            Esta sección está lista para la siguiente etapa de desarrollo. Pronto podrás consultar y gestionar todos los datos correspondientes.
+          </p>
+          <div class="mt-6 flex flex-wrap justify-center gap-3">
+            <span class="bg-gold-100 text-gold-400 border border-gold-200 text-xs px-3 py-1 rounded-full font-medium">Design System Listo</span>
+            <span class="bg-whatsapp-50 text-whatsapp-500 border border-whatsapp-500/30 text-xs px-3 py-1 rounded-full font-medium">Supabase Prepared</span>
+          </div>
+        </div>
+      </div>
 
-6. **EmptyState (`EmptyState.tsx`)**:
-   - Componente modular para pantallas sin datos con ilustración/ícono estilizado, título claro, descripción concreta y botón de llamada a la acción principal.
+    </main>
+  </div>
 
-7. **Modal / SlideOver (`Modal.tsx`)**:
-   - Diálogo modal con overlay oscuro (`rgba(10, 11, 13, 0.8)` con blur), cabecera, botón de cierre y contenedor con scroll interno.
+  <!-- NAVEGACIÓN MÓVIL INFERIOR -->
+  <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-onyx-950 border-t border-gold-200 z-30 px-2 py-2 flex justify-around items-center backdrop-blur bg-opacity-95">
+    <button onclick="switchTab('dashboard')" id="mobile-tab-dashboard" class="mobile-tab-btn flex flex-col items-center p-2 text-[10px] text-gold-400 font-bold transition-all">
+      <i data-lucide="layout-dashboard" class="w-5 h-5 mb-0.5"></i>
+      <span>Dashboard</span>
+    </button>
+    
+    <button onclick="switchTab('inventario')" id="mobile-tab-inventario" class="mobile-tab-btn flex flex-col items-center p-2 text-[10px] text-ivory-200 transition-all">
+      <i data-lucide="package" class="w-5 h-5 mb-0.5"></i>
+      <span>Stock</span>
+    </button>
+    
+    <button onclick="switchTab('whatsapp')" id="mobile-tab-whatsapp" class="mobile-tab-btn flex flex-col items-center p-2 text-[10px] text-ivory-200 transition-all">
+      <i data-lucide="message-square" class="w-5 h-5 mb-0.5 text-whatsapp-500"></i>
+      <span>WhatsApp</span>
+    </button>
+    
+    <button onclick="toggleMobileMenu()" class="flex flex-col items-center p-2 text-[10px] text-ivory-200 transition-all">
+      <i data-lucide="menu" class="w-5 h-5 mb-0.5"></i>
+      <span>Menú</span>
+    </button>
+  </nav>
 
----
+  <script>
+    const routes = {
+      dashboard: {
+        title: 'Dashboard General',
+        desc: 'Métricas clave, ventas de tocadores y estado del inventario.',
+        icon: 'layout-dashboard'
+      },
+      inventario: {
+        title: 'Catálogo & Stock de Muebles',
+        desc: 'Gestión de tocadores (Línea RH y ECO), camas y cocinas.',
+        icon: 'package'
+      },
+      whatsapp: {
+        title: 'Mensajes & Sofía IA',
+        desc: 'Registro de conversaciones, notas de voz y cotizaciones de clientes.',
+        icon: 'message-square'
+      },
+      remisiones: {
+        title: 'Digitalización de Remisiones',
+        desc: 'Carga de fotos de entregas de muebles y firmas de conformidad.',
+        icon: 'file-text'
+      },
+      cotizador: {
+        title: 'Cotizador Inteligente',
+        desc: 'Cálculo de precios, fletes e instaladores por ciudad.',
+        icon: 'calculator'
+      },
+      reportes: {
+        title: 'Reportes & Capital Inmovilizado',
+        desc: 'Análisis de inventario en taller y margen financiero por producto.',
+        icon: 'bar-chart-3'
+      },
+      configuracion: {
+        title: 'Ajustes de Taller',
+        desc: 'Configuración de números vinculados, datos de garantía y empresa.',
+        icon: 'settings'
+      }
+    };
 
-### 4. LAYOUT MAESTRO Y NAVEGACIÓN (`src/components/layout/`)
+    function switchTab(tabKey) {
+      const data = routes[tabKey];
+      if (!data) return;
 
-Implementa la estructura de navegación principal:
+      document.getElementById('page-title').innerText = data.title;
+      document.getElementById('page-desc').innerText = data.desc;
+      document.getElementById('breadcrumb-title').innerText = data.title;
+      document.getElementById('placeholder-title').innerText = data.title;
 
-1. **Sidebar Navegación (`Sidebar.tsx`)**:
-   - Logo de marca **Muebles Maison** con isotipo y subtítulo "Inventario Inteligente".
-   - Indicador de estado de conexión WhatsApp en tiempo real (Píldora: "WhatsApp Activo: +57 300...").
-   - Menú de navegación principal con íconos de Lucide:
-     - **Panel de Control** (`/dashboard` - Resumen general de stock y actividad)
-     - **Catálogo & Stock** (`/inventario` - Muebles, tocadores, baños y cocinas)
-     - **Movimientos & Remisiones** (`/movimientos` - Entradas, salidas y remisiones procesadas)
-     - **Cotizador WhatsApp** (`/cotizaciones` - Cotizaciones rápidas de taller y clientes)
-     - **Auditoría & Cuadres** (`/auditoria` - Conteos físicos y control de diferencias)
-     - **Sedes y Bodegas** (`/sedes` - Vista multisede o bodegas satélite)
-     - **Configuración & WhatsApp** (`/configuracion` - Reglas de stock mínimo, números vinculados)
-   - Selector o indicador de Sede activa en la parte inferior.
-   - Perfil de usuario compacto (avatar con iniciales, rol y botón de colapso).
+      const iconElem = document.getElementById('placeholder-icon');
+      iconElem.setAttribute('data-lucide', data.icon);
 
-2. **Top Header (`Header.tsx`)**:
-   - Breadcrumbs interactivos que reflejan la sección actual.
-   - Selector rápido de sede / bodega.
-   - Botón de acción rápida: "+ Registrar Salida Rápida" o "+ Nueva Referencia".
-   - Menú móvil responsivo (Hamburguesa con Drawer deslizante para pantallas táctiles).
+      document.querySelectorAll('.nav-btn').forEach(btn => {
+        btn.className = 'nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm font-medium transition-all text-ivory-100 hover:bg-onyx-800 hover:text-gold-400';
+      });
 
-3. **AppLayout (`AppLayout.tsx`)**:
-   - Envoltorio principal que une Sidebar, Top Header y el área de contenido principal (`<Outlet />` o `children`) con scroll independiente y fondo general `#0E0F12`.
+      const activeDesktopBtn = document.getElementById('nav-' + tabKey);
+      if (activeDesktopBtn) {
+        activeDesktopBtn.className = 'nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm font-medium transition-all bg-gold-400 text-onyx-950 font-semibold shadow-gold-glow';
+      }
 
----
+      document.querySelectorAll('.mobile-tab-btn').forEach(btn => {
+        btn.className = 'mobile-tab-btn flex flex-col items-center p-2 text-[10px] text-ivory-200 transition-all';
+      });
 
-### 5. ENRUTAMIENTO Y PÁGINAS BASE (ESTADOS VACÍOS)
+      const activeMobileBtn = document.getElementById('mobile-tab-' + tabKey);
+      if (activeMobileBtn) {
+        activeMobileBtn.className = 'mobile-tab-btn flex flex-col items-center p-2 text-[10px] text-gold-400 font-bold transition-all';
+      }
 
-Configura las rutas principales en React Router (o sistema de rutas del proyecto) vinculadas al `AppLayout`. Cada página debe renderizar un título temático y el componente `EmptyState` indicando el propósito de la sección:
-- `/` -> Redirige a `/dashboard`
-- `/dashboard` -> Vista inicial de dashboard con rejilla de 4 `MetricCard` vacíos y estado vacío de actividad reciente.
-- `/inventario` -> Vista con barra de búsqueda, filtros por categoría (Tocadores, Baños, Cocinas, Decoración) y tabla vacía con mensaje "Aún no has registrado referencias de muebles".
-- `/movimientos` -> Vista de histórico de entradas y salidas vía WhatsApp con empty state.
-- `/cotizaciones` -> Vista de cotizaciones generadas con empty state.
-- `/auditoria` -> Vista de conteos de stock con empty state.
-- `/sedes` -> Vista de salas de exhibición y bodegas.
-- `/configuracion` -> Vista de ajustes del sistema y estado del número de WhatsApp.
+      lucide.createIcons();
+    }
 
----
+    function toggleMobileMenu() {
+      const sidebar = document.getElementById('mobile-sidebar');
+      const overlay = document.getElementById('mobile-overlay');
+      const isHidden = sidebar.classList.contains('-translate-x-full');
 
-### 6. CRITERIOS DE ACEPTACIÓN
-1. La aplicación compila sin errores y renderiza la paleta oficial (fondo `#0E0F12`, tarjetas `#181A20`, acentos `#D4AF37`, textos `#F8F5EE` y WhatsApp `#25D366`).
-2. El layout maestro es totalmente responsivo: sidebar fija en pantallas de escritorio y menú drawer desplegable en dispositivos móviles.
-3. Todas las rutas base (`/dashboard`, `/inventario`, `/movimientos`, `/cotizaciones`, `/auditoria`, `/sedes`, `/configuracion`) funcionan correctamente y renderizan su estructura base con `EmptyState`.
-4. Los componentes UI primitivos (`Button`, `Card`, `Badge`, `Input`, `MetricCard`, `EmptyState`, `Modal`) están implementados, tipados y listos para ser consumidos en las siguientes etapas.
-5. No se ha implementado todavía lógica de autenticación ni backend complejo, respetando el alcance estricto de la etapa 1.
+      if (isHidden) {
+        sidebar.classList.remove('-translate-x-full');
+        overlay.classList.remove('hidden');
+      } else {
+        sidebar.classList.add('-translate-x-full');
+        overlay.classList.add('hidden');
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      lucide.createIcons();
+    });
+  </script>
+</body>
+</html>
