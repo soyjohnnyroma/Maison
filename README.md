@@ -1,2 +1,2 @@
 # Maison
-Negocio especialista en productos Mobiliarios.
+Negocio especialista en productos mobiliarios.
